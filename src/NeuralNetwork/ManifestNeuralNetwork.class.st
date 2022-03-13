@@ -1,5 +1,5 @@
 "
-Test methods for NN Package from Bergel's Agile AI in Pharo book.
+Neural Network classes from Alexandre Bergel's 'Agile AI in Pharo' book.
 "
 Class {
 	#name : #ManifestNeuralNetwork,
