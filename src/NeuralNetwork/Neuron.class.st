@@ -111,6 +111,13 @@ Neuron >> learningRate: aFloat [
 ]
 
 { #category : #accessing }
+Neuron >> numOfWeights [ 
+	"Reply with the number of weights the neuron contains."
+	
+	^ weights size
+]
+
+{ #category : #accessing }
 Neuron >> output [
 
 	^ output

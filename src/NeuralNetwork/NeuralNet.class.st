@@ -66,6 +66,21 @@ NeuralNet >> feed: inputValues [
 	^ layers first feed: inputValues 
 ]
 
+{ #category : #configuring }
+NeuralNet >> getPossibleCutpoints [ 
+	"Reply with the indices of each neuron's values."
+	"This is useful when applying genetic algorithms to NNs."
+	
+	| result index |
+	result := OrderedCollection new.
+	index := 1.
+	self neurons do: [ :neuron | 
+		result add: index .
+		index := index + neuron weights size + 1 .
+		].
+	^ result asArray 
+]
+
 { #category : #initialization }
 NeuralNet >> initialize [ 
 	super initialize .
@@ -115,6 +130,13 @@ NeuralNet >> loadIrisData [
 	^ irisData
 ]
 
+{ #category : #accessing }
+NeuralNet >> neurons [ 
+	"Reply with the list of neurons the network contains."
+	
+	^ layers flatCollect: #neurons
+]
+
 { #category : #configuring }
 NeuralNet >> numberOfInputs [ 
 	"Respond with the number of inputs (neurons) in the first layer."
@@ -137,6 +159,13 @@ NeuralNet >> numberOfOutputs [
 ]
 
 { #category : #configuring }
+NeuralNet >> numberOfParameters [ 
+	"Reply with the number of weights & biases the network contains."
+	
+	^ (self neurons collect: #numOfWeights) sum + self neurons size
+]
+
+{ #category : #configuring }
 NeuralNet >> outputLayer [
 	
 	^ layers last
@@ -151,6 +180,24 @@ NeuralNet >> predict: inputs [
 	| outputs |
 	outputs := self feed: inputs .
 	^ (outputs indexOf: (outputs max)) - 1 
+]
+
+{ #category : #configuring }
+NeuralNet >> setWeightsAndBiases: weightsAndBiases [ 
+	"Set the weights and biases of each neuron."
+	"This is useful when applying genetic algorithms to NNs."
+	
+	| index |
+	self assert: [ self numberOfParameters = weightsAndBiases size ] .
+	self assert: [ weightsAndBiases allSatisfy: #isNumber ] .
+	index := 1 .
+	self neurons do: [ :neuron | 
+		neuron weights: (weightsAndBiases 
+			copyFrom: index to: neuron numOfWeights + index - 1) .
+		index := index + neuron numOfWeights .
+		neuron bias: (weightsAndBiases at: index) .
+		index := index + 1
+		].
 ]
 
 { #category : #computing }
