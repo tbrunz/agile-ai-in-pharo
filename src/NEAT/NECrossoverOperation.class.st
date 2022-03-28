@@ -7,7 +7,7 @@ Class {
 	#category : #NEAT
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #actions }
 NECrossoverOperation >> performOn: ind1 and: ind2 [ 
 	"Reply with a child individual that is the result of 
 	a crossover between individuals #ind1 and #ind2."
@@ -41,6 +41,10 @@ NECrossoverOperation >> performOn: ind1 and: ind2 [
 		| conn1 conn2 |
 		indexInd1 := indexInd1 min: ind1 numberOfConnections .
 		indexInd2 := indexInd2 min: ind2 numberOfConnections .
+		
+		conn1 := ind1 connections at: indexInd1 .
+		conn2 := ind2 connections at: indexInd2 .
+		
 		conn1 innovationNumber = conn2 innovationNumber 
 			ifTrue: [ 
 				newConnections add: (ind1 randomGenerator next > 0.5
@@ -50,10 +54,18 @@ NECrossoverOperation >> performOn: ind1 and: ind2 [
 				indexInd2 := indexInd2 + 1 .
 				] 
 			ifFalse: [ shouldIterate := false ] .
+			
 		(indexInd1 >= indexInd1 numberOfConnections 
 			and: [ indexInd2 >= indexInd2 numberOfConnections  ] )
 				ifTrue: [ shouldIterate := false ] .
 		].
 	
-	"We consider"
+	"We consider the remainder connections from the best individual."
+	newConnections addAll: 
+		((ind1 connections allButFirst: indexInd1 - 1) collect: #copy) .
+	
+	^ NEIndividual new 
+		nodes: newNodes;
+		connections: newConnections;
+		randomGenerator: ind1 randomGenerator 
 ]
