@@ -8,7 +8,7 @@ Class {
 		'id',
 		'individuals'
 	],
-	#category : #NEAT
+	#category : #'NEAT-Core'
 }
 
 { #category : #accessing }
@@ -16,6 +16,16 @@ NESpecies >> averageFitness [
 	"Reply with the average fitness of the individuals in the species."
 	
 	^ (self individuals collect: #fitness) average
+]
+
+{ #category : #viewing }
+NESpecies >> gtInspectorListOfIndividualsIn: composite [ 
+
+	<gtInspectorPresentationOrder: -10>
+	
+	composite list 
+		title: 'Individuals';
+		display: individuals 
 ]
 
 { #category : #accessing }

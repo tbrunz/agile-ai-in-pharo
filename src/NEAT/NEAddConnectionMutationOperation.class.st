@@ -4,7 +4,7 @@ I represent a structural mutation operation of adding a new connection for NEAT 
 Class {
 	#name : #NEAddConnectionMutationOperation,
 	#superclass : #NEAbstractStructuralMutationOperation,
-	#category : #NEAT
+	#category : #'NEAT-Core'
 }
 
 { #category : #actions }

@@ -4,7 +4,7 @@ I represent a non-structural mutation operation of modifying a connection weight
 Class {
 	#name : #NEConnectionWeightMutationOperation,
 	#superclass : #NEAbstractNonStructuralMutationOperation,
-	#category : #NEAT
+	#category : #'NEAT-Core'
 }
 
 { #category : #actions }

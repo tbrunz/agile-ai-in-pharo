@@ -4,7 +4,7 @@ I represent the crossover operations that are performed between two individuals 
 Class {
 	#name : #NECrossoverOperation,
 	#superclass : #Object,
-	#category : #NEAT
+	#category : #'NEAT-Core'
 }
 
 { #category : #actions }

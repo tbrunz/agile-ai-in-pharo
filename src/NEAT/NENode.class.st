@@ -14,7 +14,7 @@ Class {
 		'numOfReceivedValues',
 		'result'
 	],
-	#category : #NEAT
+	#category : #'NEAT-Core'
 }
 
 { #category : #configuration }

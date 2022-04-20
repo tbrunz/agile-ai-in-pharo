@@ -11,7 +11,7 @@ Class {
 		'fitness',
 		'species'
 	],
-	#category : #NEAT
+	#category : #'NEAT-Core'
 }
 
 { #category : #adding }
@@ -130,6 +130,17 @@ NEIndividual >> fitness: aFitnessValue [
 	fitness := aFitnessValue
 ]
 
+{ #category : #viewing }
+NEIndividual >> gtInspectorViewIn: composite [ 
+
+	<gtInpectorPresentationOrder: -10>
+	
+	composite roassal2 
+		title: 'View';
+		initializeView: [ self visualize ]
+	
+]
+
 { #category : #initialization }
 NEIndividual >> initialize [ 
 
@@ -242,4 +253,44 @@ NEIndividual >> species [
 NEIndividual >> species: aSpecies [
 
 	species := aSpecies
+]
+
+{ #category : #viewing }
+NEIndividual >> visualize [ 
+	"Visualize the associated neural network."
+	
+	| b legendBuilder |
+	self buildNetwork .
+	
+	b := RTMondrian new.
+	b shape label text: #id;
+		color: Color gray;
+		if: #isInput color: Color blue;
+		if: #isOutput color: Color red;
+		if: #isBias color: Color yellow .
+	b nodes: self nodes .
+	
+	b shape line color: (Color gray alpha: 0.8) .
+	b edges connectToAll: #connectedNodes .
+	b layout tree; ifNotConnectedThen: RTGridLayout new.
+	
+	"The line width reflects the weight of the connection."
+	b normalizer 
+		normalizeLineWidth: [ :from :to |
+			from weightOfConnectionWith: to ] min: 0.5 max: 4.
+	b build .
+	
+	"Render a legend on demand, accessible from the ? top-left icon."
+	legendBuilder := RTLegendBuilder new.
+	legendBuilder onDemand .
+	legendBuilder view: b view .
+	legendBuilder addText: 'Individual visualization' .
+	legendBuilder addColor: Color blue text: 'Input node' .
+	legendBuilder addColor: Color red text: 'Output node' .
+	legendBuilder addColor: Color yellow text: 'Bias node' .
+	legendBuilder addColor: Color gray text: 'Hidden node' .
+	legendBuilder build .
+	
+	^ b view
+	
 ]

@@ -4,7 +4,7 @@ I represent a structural mutation operation of adding a new node for NEAT indivi
 Class {
 	#name : #NEAddNodeMutationOperation,
 	#superclass : #NEAbstractStructuralMutationOperation,
-	#category : #NEAT
+	#category : #'NEAT-Core'
 }
 
 { #category : #actions }

@@ -8,7 +8,7 @@ Class {
 		'frameSize',
 		'groups'
 	],
-	#category : #NEAT
+	#category : #'NEAT-Core'
 }
 
 { #category : #accessing }
@@ -60,4 +60,26 @@ NESpeciation >> process: someIndividuals [
 	groups do: [ :aSpecies | 
 		aSpecies individuals do: [ :ind | ind species: aSpecies ] .
 		]
+]
+
+{ #category : #viewing }
+NESpeciation >> visualize [ 
+	"Visualize groups of individuals."
+	
+	| b legendBuilder |
+	b := RTMondrian new.
+	b shape box size: [ :s | s individuals size ] .
+	b nodes: (self groups reverseSortedAs: #maxFitness) .
+	b layout grid .
+	b normalizer normalizeColor: #maxFitness .
+	b build .
+	
+	legendBuilder := RTLegendBuilder new.
+	legendBuilder view: b view .
+	legendBuilder addText: 'Species visualization' .
+	legendBuilder addText: 'Box size = Species size' .
+	legendBuilder addColorFadingFrom: Color gray to: Color red text: 'Max fitness' .
+	legendBuilder build .
+	
+	^ b view
 ]

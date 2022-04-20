@@ -12,7 +12,7 @@ Class {
 		'avgFitness',
 		'bestIndividual'
 	],
-	#category : #NEAT
+	#category : #'NEAT-Core'
 }
 
 { #category : #accessing }
@@ -49,6 +49,16 @@ NELog >> generation [
 NELog >> generation: anInteger [
 
 	generation := anInteger
+]
+
+{ #category : #viewing }
+NELog >> gtInspectorViewIn: composite [ 
+
+	<gtInspectorPresentationOrder: -10>
+	
+	composite roassal2 
+		title: 'View';
+		initializeView: [ speciation visualize ]
 ]
 
 { #category : #accessing }
