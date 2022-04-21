@@ -35,4 +35,9 @@ NEATTest >> testXOR [
 		].
 	neat numberOfGens: 180 .
 	neat run.
+	
+	self assert: (neat result evaluate: #(1 1) ) first closeTo: 0  precision: 0.01 .
+	
+	"neat visualizeFitness open .
+	neat visualizeNumberOfSpecies open .	"
 ]

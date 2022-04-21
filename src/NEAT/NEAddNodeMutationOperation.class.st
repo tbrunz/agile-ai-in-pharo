@@ -20,7 +20,7 @@ NEAddNodeMutationOperation >> on: anIndividual [
 	connection makeDisabled .
 	
 	"Now add a new hidden node..."
-	anIndividual addHiddenNode innovationNumber: InnovationNumber .
+	(anIndividual addHiddenNode) innovationNumber: InnovationNumber .
 	
 	"...and two new connections."
 	anIndividual addConnection: 

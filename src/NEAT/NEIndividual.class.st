@@ -25,7 +25,7 @@ NEIndividual >> addConnection: aConnection [
 NEIndividual >> addHiddenNode [
 	"Add a hidden node to the individual."
 	
-	self addNode: (NENode new setAsHidden) .
+	^ self addNode: (NENode new setAsHidden) .
 ]
 
 { #category : #adding }

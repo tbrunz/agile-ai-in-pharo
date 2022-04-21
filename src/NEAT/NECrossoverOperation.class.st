@@ -55,8 +55,8 @@ NECrossoverOperation >> performOn: ind1 and: ind2 [
 				] 
 			ifFalse: [ shouldIterate := false ] .
 			
-		(indexInd1 >= indexInd1 numberOfConnections 
-			and: [ indexInd2 >= indexInd2 numberOfConnections  ] )
+		(indexInd1 >= ind1 numberOfConnections 
+			and: [ indexInd2 >= ind2 numberOfConnections  ] )
 				ifTrue: [ shouldIterate := false ] .
 		].
 	
