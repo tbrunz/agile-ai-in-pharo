@@ -19,6 +19,51 @@ NEATTest >> setUp [
 ]
 
 { #category : #tests }
+NEATTest >> testIrisDataSet [
+
+	| irisCSV lines textLines irisData neat diff |
+	
+	"We first prepare the data."	
+	irisCSV := (ZnEasy 
+		get: 'https://agileartificialintelligence.github.io/Datasets/iris.csv') 
+			contents .
+	lines := irisCSV lines .
+	lines := lines allButFirst .
+	textLines := lines collect: [ :line | 
+		| subStrs |
+		subStrs := line substrings: ',' .
+		(subStrs allButLast collect: [ :word | word asNumber ] ) , 
+			(Array with: subStrs last)
+		].
+	irisData := textLines collect: [ :row | 
+		| line |
+		row last = 'setosa' ifTrue: [ line := #( 0 ) ] .
+		row last = 'versicolor' ifTrue: [ line := #( 1 ) ] .
+		row last = 'virginica' ifTrue: [ line := #( 2 ) ] .
+		row allButLast, line
+		].
+	
+	"Run the NEAT algorithm."
+	neat := NEAT new.
+	neat numberOfInputs: 4 .
+	neat numberOfOutputs: 3 .
+	neat fitness: [ :ind | 
+		| score | 
+		score := 0 .
+		irisData do: [ :tuple | 
+			diff := (ind predict: tuple allButLast) - tuple last .
+			score := score + (diff * diff)
+			].
+		(score / -4) asFloat
+		].
+	
+	neat numberOfGens: 180. 
+	neat run .
+	
+	neat visualize open .
+]
+
+{ #category : #tests }
 NEATTest >> testXOR [ 
 	| neat diff |
 	neat := NEAT new .
