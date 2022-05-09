@@ -22,13 +22,6 @@ Class {
 	#category : #MiniMario
 }
 
-{ #category : #accessing }
-MMWorld >> CellAt: aPoint put: value [
-	"Set the value of a particular cell."
-	
-	^ map at: aPoint y at: aPoint x put: value
-]
-
 { #category : #initialization }
 MMWorld >> addBrick: position [
 	"Add a brick to a position."
@@ -83,6 +76,13 @@ MMWorld >> beat [
 	self refreshView .
 ]
 
+{ #category : #accessing }
+MMWorld >> cellAt: aPoint put: value [
+	"Set the value of a particular cell."
+	
+	^ map at: aPoint y at: aPoint x put: value
+]
+
 { #category : #actions }
 MMWorld >> gameOver [ 
 	"End the game..."
@@ -123,6 +123,48 @@ MMWorld >> generateMap [
 		].
 ]
 
+{ #category : #visualization }
+MMWorld >> generateUI [ 
+	"Build the game's user interface."
+	
+	| e upperBounds lowerBounds cellSizeInPixels |
+	
+	"Size of each cell."
+	cellSizeInPixels := 25 .
+	
+	"Create the visual representation of cells."
+	view := RTView new.
+	upperBounds := self windowSize // 2 .
+	lowerBounds := upperBounds negated .
+	lowerBounds to: upperBounds do: [ :x |
+		lowerBounds to: upperBounds do: [ :y | 
+			e := RTBox new size: cellSizeInPixels + 1;
+				elementOn: (x @ y) .
+			view add: e .
+			e translateTo: (x @ y) * cellSizeInPixels 
+			]
+		].
+	
+	"Define the actions to be taken when keys are pressed."
+	view when: TRKeyDown do: [ :event | 
+		"Key D"
+		event keyValue = 100 ifTrue: [ mario moveRight ] .
+		
+		"Key A"
+		event keyValue = 97 ifTrue: [ mario moveLeft ] .
+		
+		"Key W"
+		event keyValue = 119 ifTrue: [ mario jump ]
+		].
+	
+	"A beat is performed at each update of the UI."
+	view addAnimation: (RTActiveAnimation new 
+		intervalInMilliseconds: 30; 
+		blockToExecute: [ self beat ] ) .
+		
+	self refreshView .
+]
+
 { #category : #accessing }
 MMWorld >> getCellAt: aPoint [ 
 	"Reply with the value of a particular cell."
@@ -157,10 +199,12 @@ MMWorld >> initializeMonsters [
 	"Add a number of monster characters."
 	
 	monsters := OrderedCollection new.
+	
 	10 timesRepeat: [ 
 		| monster |
 		monster := MMMonster new 
 			translateTo: (randomGenerator nextInteger: self size x) @ 2 .
+			
 		self addMonster: monster
 		]
 ]
@@ -193,6 +237,58 @@ MMWorld >> monsters [
 	^ monsters
 ]
 
+{ #category : #visualization }
+MMWorld >> open [ 
+	"Open the UI."
+	
+	self inspect .
+	self generateUI .
+	^ view open 
+]
+
+{ #category : #visualization }
+MMWorld >> refreshView [ 
+	"Refresh the UI."
+	
+	| p t color |
+	view ifNil: [ ^ self ] .
+	isGameRunning ifFalse: [ ^ self ] .
+	
+	p := mario position .
+	view elements doWithIndex: [ :e :index | 
+		t := p + e model .
+		
+		"Empty cells are blue, platform cells are brown, 
+		tube cells are green, cells outside the map are black."
+		(self isInMap: t)
+			ifTrue: [ 
+				(self getCellAt: t) = 0 ifTrue: [ color := Color blue ] .
+				(self getCellAt: t) = 1 ifTrue: [ color := Color brown ] .
+				(self getCellAt: t) = 2 ifTrue: [ color := Color green ] .
+				] 
+			ifFalse: [ color := Color black ] .
+			
+		"Mario is red (of course)."
+		e model = (0 @ 0) ifTrue: [ color := Color red ] .
+		e trachelShape color: color .
+		].
+	
+	monsters do: [ :monster | 
+		t := monster position - p .
+		
+		"Only monsters that are within the window frame are rendered."
+		t x abs < self windowSize ifTrue: [ 
+			| cell |
+			cell := view elements elementFromModel: t .
+			
+			"Monsters are orange."
+			cell ifNotNil: [ cell trachelShape color: Color orange ]
+			]
+		].
+	
+	view signalUpdate .
+]
+
 { #category : #accessing }
 MMWorld >> seed: aNumber [ 
 	"Create a random number generator with a particular seed."
@@ -201,8 +297,70 @@ MMWorld >> seed: aNumber [
 	self generateMap .
 ]
 
+{ #category : #visualization }
+MMWorld >> showCompleteMap [ 
+	"SHow the complete map."
+	
+	| v cellSizeInPixels color e |
+	v := RTView new.
+	v @ RTDraggableView .
+	
+	cellSizeInPixels := 4 .
+	
+	1 to: self size x do: [ :x | 
+		1 to: self size y do: [ :y | 
+			color := Color black .
+			(self getCellAt: (x @ y) ) = 0 
+				ifTrue: [ color := Color blue ] .
+			(self getCellAt: (x @ y) ) = 1 
+				ifTrue: [ color := Color brown ] .
+			(self getCellAt: (x @ y) ) = 2 
+				ifTrue: [ color := Color green ] .
+			
+			e := RTBox new size: cellSizeInPixels + 1;
+				color: color;
+				elementOn: (x @ y).
+			v add: e .
+			e translateTo: (x @ y) * cellSizeInPixels 
+			]
+		].
+	
+	v open.
+]
+
 { #category : #accessing }
 MMWorld >> size [ 
 
 	^ 300 @ 10
+]
+
+{ #category : #visualization }
+MMWorld >> whatMarioSees [ 
+	"Reply with the values of the visible cells."
+	
+	| result p t upperBounds lowerBounds |
+	result := OrderedCollection new.
+	p := mario position .
+	
+	upperBounds := self windowSize // 2 .
+	lowerBounds := upperBounds negated .
+	
+	lowerBounds to: upperBounds do: [ :x | 
+		lowerBounds to: upperBounds do: [ :y | 
+			t := p + (x @ y) .
+			(self isInMap: t)
+				ifTrue: [ result add: (self getCellAt: t) ] 
+				ifFalse: [ result add: 1 ]
+			]
+		].
+	
+	^ result
+	
+]
+
+{ #category : #visualization }
+MMWorld >> windowSize [ 
+	"Reply with the number of pixels of a window frame side."
+	
+	^ 11
 ]

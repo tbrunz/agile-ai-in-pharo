@@ -24,7 +24,9 @@ MMAbstractCharacter >> beat [
 	isJumping ifTrue: [ 
 		phase == #goingUp ifTrue: [ self translateBy: (0 @ -1) ] .
 		phase == #goingDown ifTrue: [ self translateBy: (0 @ 1) ] .
+		
 		jumpNumSteps := jumpNumSteps + 1 .
+		
 		jumpNumSteps = 5 ifTrue: [ phase := #goingDown ] .
 		jumpNumSteps = 10 ifTrue: [ isJumping := false ]
 		].
@@ -35,7 +37,7 @@ MMAbstractCharacter >> beat [
 				self setAsFalling .
 				self translateBy: (0 @ 1)
 				] 
-			ifFalse: [ self SetAsNotFalling ]
+			ifFalse: [ self setAsNotFalling ]
 		].
 ]
 
@@ -80,6 +82,7 @@ MMAbstractCharacter >> jump [
 	
 	isJumping := true .
 	phase := #goingUp .
+	jumpNumSteps := 0 .
 ]
 
 { #category : #actions }
