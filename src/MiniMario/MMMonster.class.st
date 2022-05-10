@@ -8,7 +8,7 @@ Class {
 		'movingLeft',
 		'pauseCounter'
 	],
-	#category : #MiniMario
+	#category : #'MiniMario-Game'
 }
 
 { #category : #actions }

@@ -14,7 +14,7 @@ Class {
 		'isFalling',
 		'isJumping'
 	],
-	#category : #MiniMario
+	#category : #'MiniMario-Game'
 }
 
 { #category : #actions }

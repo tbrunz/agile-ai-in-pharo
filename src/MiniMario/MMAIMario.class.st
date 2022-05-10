@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'neuralNet'
 	],
-	#category : #MiniMario
+	#category : #'MiniMario-Game'
 }
 
 { #category : #actions }

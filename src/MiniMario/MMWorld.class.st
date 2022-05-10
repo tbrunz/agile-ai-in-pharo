@@ -19,7 +19,7 @@ Class {
 		'isGameRunning',
 		'randomGenerator'
 	],
-	#category : #MiniMario
+	#category : #'MiniMario-Game'
 }
 
 { #category : #initialization }

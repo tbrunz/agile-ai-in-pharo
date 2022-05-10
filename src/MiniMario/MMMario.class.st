@@ -6,7 +6,7 @@ Most of Mario's behavior is defined in his parent class.
 Class {
 	#name : #MMMario,
 	#superclass : #MMAbstractCharacter,
-	#category : #MiniMario
+	#category : #'MiniMario-Game'
 }
 
 { #category : #actions }
