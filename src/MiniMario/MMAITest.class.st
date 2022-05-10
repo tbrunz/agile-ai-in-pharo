@@ -41,7 +41,7 @@ MMAITest >> trainAIMario [
 		world mario position x
 		].
 	
-	neat numberOfGens: 16.
+	neat numberOfGens: 160.
 	neat run.
 	
 	^ neat result 
